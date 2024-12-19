@@ -1,26 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { NumberInput } from './components/NumberInput';
+import { FileDropZone } from './components/FileDropZone';
+import { FileList } from './components/FileList';
+import { useFileHandling } from './hooks/useFileHandling';
+import { useNumberInput } from './hooks/useNumberInput';
 
-function App() {
+export default function App() {
+  const { number, handleNumberChange } = useNumberInput();
+  const { 
+    files, 
+    isDragging, 
+    fileInputRef,
+    handleDragOver, 
+    handleDragLeave, 
+    handleDrop,
+    handleClick,
+    handleFileSelect
+  } = useFileHandling();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="min-h-screen bg-[#6741d9] flex items-center justify-center p-6">
+      <div className="w-full max-w-md space-y-8">
+        <NumberInput value={number} onChange={handleNumberChange} />
+        <FileDropZone
+          isDragging={isDragging}
+          files={files}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          onClick={handleClick}
+          onFileSelect={handleFileSelect}
+          fileInputRef={fileInputRef}
+        />
+        <FileList files={files} />
+      </div>
     </div>
   );
 }
-
-export default App;
