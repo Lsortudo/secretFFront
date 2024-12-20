@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 
-export function useFileHandling() {
+export function useFileHandling(onFileSelect?: (filename: string) => void) {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -26,17 +26,33 @@ export function useFileHandling() {
       .filter(file => file.type === 'text/plain')
       .map(file => file.name);
 
-    setFiles(prev => [...prev, ...textFiles]);
+    if (textFiles.length > 0) {
+      setFiles(prev => [...prev, ...textFiles]);
+      onFileSelect?.(textFiles[textFiles.length - 1]);
+    }
   };
 
-  const handleClick = () => {
-    fileInputRef.current?.click();
-  };
+  const handleClick = useCallback(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  }, []);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       handleFiles(Array.from(e.target.files));
     }
+  };
+
+  const handleSort = () => {
+    setFiles(prev => {
+      const shuffled = [...prev];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    });
   };
 
   return {
@@ -47,6 +63,7 @@ export function useFileHandling() {
     handleDragLeave,
     handleDrop,
     handleClick,
-    handleFileSelect
+    handleFileSelect,
+    handleSort
   };
 }
