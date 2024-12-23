@@ -1,8 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
+import { sendFileToBackend } from '../services/api';
 
-export function useFileHandling(onFileSelect?: (filename: string) => void) {
+export function useFileHandling(onFileSelect?: () => void) {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<string[]>([]);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -22,37 +24,35 @@ export function useFileHandling(onFileSelect?: (filename: string) => void) {
   }, []);
 
   const handleFiles = (fileList: File[]) => {
-    const textFiles = fileList
-      .filter(file => file.type === 'text/plain')
-      .map(file => file.name);
-
-    if (textFiles.length > 0) {
-      setFiles(prev => [...prev, ...textFiles]);
-      onFileSelect?.(textFiles[textFiles.length - 1]);
+    const textFile = fileList.find(file => file.type === 'text/plain');
+    
+    if (textFile) {
+      setFiles([textFile.name]);
+      setSelectedFile(textFile);
+      onFileSelect?.();
     }
   };
 
   const handleClick = useCallback(() => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    fileInputRef.current?.click();
   }, []);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files?.length) {
       handleFiles(Array.from(e.target.files));
     }
   };
 
-  const handleSort = () => {
-    setFiles(prev => {
-      const shuffled = [...prev];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return shuffled;
-    });
+  const handleSort = async () => {
+    if (!selectedFile) {
+      return;
+    }
+
+    try {
+      await sendFileToBackend(selectedFile);
+    } catch (error) {
+      console.error('Error during sorting:', error);
+    }
   };
 
   return {

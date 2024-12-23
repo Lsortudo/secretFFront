@@ -21,7 +21,7 @@ export default function App() {
     handleClick,
     handleFileSelect,
     handleSort
-  } = useFileHandling((/*colocar o nome do txt aqui talvez*/) => {
+  } = useFileHandling(() => {
     showMessage('Um arquivo foi selecionado');
   });
 
