@@ -1,11 +1,12 @@
 import { useState, useCallback, useRef } from 'react';
-import { sendFileToBackend } from '../services/api';
+import { sendFileToBackend } from '../services/api/pairs.service';
+import type { Pair } from '../types';
 
 export function useFileHandling(onFileSelect?: () => void) {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [pairs, setPairs] = useState<any[]>([]);
+  const [pairs, setPairs] = useState<Pair[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {

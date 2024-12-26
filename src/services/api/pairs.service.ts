@@ -1,12 +1,14 @@
-export async function sendFileToBackend(file: File) {
+import { API_ENDPOINTS } from './endpoints';
+import type { Pair } from '../../types';
+
+export async function sendFileToBackend(file: File): Promise<Pair[]> {
   try {
     const content = await file.text();
-    // Split content by newlines and filter empty lines
     const names = content.split('\n')
       .map(line => line.trim())
-      .filter(line => line.length > 0);
+      .filter(Boolean);
 
-    const response = await fetch('http://localhost:8080/draw', {
+    const response = await fetch(API_ENDPOINTS.DRAW, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -20,8 +22,7 @@ export async function sendFileToBackend(file: File) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error('Error sending file:', error);
     throw error;
