@@ -1,7 +1,8 @@
 import React from 'react';
+import type { Pair } from '../types/pairs';
 
 interface PairsListProps {
-  pairs: string[][];
+  pairs: Pair[];
 }
 
 export function PairsList({ pairs }: PairsListProps) {
@@ -13,24 +14,16 @@ export function PairsList({ pairs }: PairsListProps) {
         Sorted Pairs
       </h3>
       <div className="space-y-2">
-        {pairs.map((pair, index) => {
-          // Ensure pair is an array before using join
-          if (!Array.isArray(pair)) {
-            console.error('Invalid pair format:', pair);
-            return null;
-          }
-          
-          return (
-            <div 
-              key={index}
-              className="px-4 py-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
-            >
-              <p className="text-center text-white/80">
-                {pair.join(' & ')}
-              </p>
-            </div>
-          );
-        })}
+        {pairs.map((pair, index) => (
+          <div 
+            key={index}
+            className="px-4 py-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20"
+          >
+            <p className="text-center text-white/80">
+              {pair.pair1} & {pair.pair2}
+            </p>
+          </div>
+        ))}
       </div>
     </div>
   );

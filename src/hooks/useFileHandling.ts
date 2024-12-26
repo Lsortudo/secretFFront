@@ -5,7 +5,7 @@ export function useFileHandling(onFileSelect?: () => void) {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [pairs, setPairs] = useState<string[][]>([]);
+  const [pairs, setPairs] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -30,7 +30,6 @@ export function useFileHandling(onFileSelect?: () => void) {
     if (textFile) {
       setFiles([textFile.name]);
       setSelectedFile(textFile);
-      setPairs([]); // Clear previous pairs
       onFileSelect?.();
     }
   };
@@ -60,9 +59,9 @@ export function useFileHandling(onFileSelect?: () => void) {
 
   return {
     files,
+    pairs,
     isDragging,
     fileInputRef,
-    pairs,
     handleDragOver,
     handleDragLeave,
     handleDrop,
