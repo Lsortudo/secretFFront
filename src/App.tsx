@@ -1,7 +1,7 @@
 import React from 'react';
 import { NumberInput } from './components/NumberInput';
 import { FileDropZone } from './components/FileDropZone';
-import { FileList } from './components/FileList';
+import { PairsList } from './components/PairsList';
 import { SortButton } from './components/SortButton';
 import { Toast } from './components/Toast';
 import { useFileHandling } from './hooks/useFileHandling';
@@ -15,6 +15,7 @@ export default function App() {
     files, 
     isDragging, 
     fileInputRef,
+    pairs,
     handleDragOver, 
     handleDragLeave, 
     handleDrop,
@@ -22,7 +23,7 @@ export default function App() {
     handleFileSelect,
     handleSort
   } = useFileHandling(() => {
-    showMessage('Um arquivo foi selecionado');
+    showMessage('File selected successfully');
   });
 
   return (
@@ -42,7 +43,7 @@ export default function App() {
         <div className="flex justify-center">
           <SortButton onClick={handleSort} disabled={files.length === 0} />
         </div>
-        <FileList files={files} />
+        <PairsList pairs={pairs} />
       </div>
       <Toast show={showToast} message={message} />
     </div>
