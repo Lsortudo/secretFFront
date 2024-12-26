@@ -1,14 +1,12 @@
-import { useState, ChangeEvent } from 'react';
+import { useState } from 'react';
 
 export function useNumberInput() {
   const [number, setNumber] = useState('');
 
-  const handleNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.length <= 5 && /^\d*$/.test(value)) {
-      setNumber(value);
-    }
+  const generateRandomNumber = () => {
+    const randomNum = Math.floor(10000 + Math.random() * 90000).toString();
+    setNumber(randomNum);
   };
 
-  return { number, handleNumberChange };
+  return { number, generateRandomNumber };
 }

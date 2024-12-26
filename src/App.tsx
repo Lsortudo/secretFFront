@@ -9,7 +9,7 @@ import { useNumberInput } from './hooks/useNumberInput';
 import { useToast } from './hooks/useToast';
 
 export default function App() {
-  const { number, handleNumberChange } = useNumberInput();
+  const { number, generateRandomNumber } = useNumberInput();
   const { showToast, message, showMessage } = useToast();
   const { 
     files, 
@@ -21,15 +21,20 @@ export default function App() {
     handleDrop,
     handleClick,
     handleFileSelect,
-    handleSort
+    handleSort: originalHandleSort
   } = useFileHandling(() => {
     showMessage('File selected successfully');
   });
 
+  const handleSort = async () => {
+    generateRandomNumber();
+    await originalHandleSort();
+  };
+
   return (
     <div className="min-h-screen bg-[#6741d9] flex items-center justify-center p-6">
       <div className="w-full max-w-md space-y-8">
-        <NumberInput value={number} onChange={handleNumberChange} />
+        <NumberInput value={number} />
         <FileDropZone
           isDragging={isDragging}
           files={files}
