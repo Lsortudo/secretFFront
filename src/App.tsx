@@ -21,14 +21,17 @@ export default function App() {
     handleDrop,
     handleClick,
     handleFileSelect,
-    handleSort: originalHandleSort
+    handleSort
   } = useFileHandling(() => {
     showMessage('File selected successfully');
   });
 
-  const handleSort = async () => {
+  const handleSortClick = async () => {
     generateRandomNumber();
-    await originalHandleSort();
+    // Wait for state update before sending request
+    setTimeout(async () => {
+      await handleSort(number);
+    }, 0);
   };
 
   return (
@@ -46,7 +49,7 @@ export default function App() {
           fileInputRef={fileInputRef}
         />
         <div className="flex justify-center">
-          <SortButton onClick={handleSort} disabled={files.length === 0} />
+          <SortButton onClick={handleSortClick} disabled={files.length === 0} />
         </div>
         <PairsList pairs={pairs} />
       </div>

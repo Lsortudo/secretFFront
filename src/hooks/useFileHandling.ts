@@ -45,13 +45,14 @@ export function useFileHandling(onFileSelect?: () => void) {
     }
   };
 
-  const handleSort = async () => {
-    if (!selectedFile) {
+  const handleSort = async (code: string) => {
+    if (!selectedFile || !code) {
+      console.error('No file selected or code is empty');
       return;
     }
 
     try {
-      const result = await sendFileToBackend(selectedFile);
+      const result = await sendFileToBackend(selectedFile, code);
       setPairs(result);
     } catch (error) {
       console.error('Error during sorting:', error);

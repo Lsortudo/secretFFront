@@ -9,22 +9,15 @@ export function NumberInput({ value }: NumberInputProps) {
     <div className="space-y-2 text-center">
       <label 
         htmlFor="number" 
-        className="block text-lg font-medium text-white"
+        className="block text-xl font-bold text-white mb-2"
       >
-        Your 5 digit code
+        Código do Sorteio
       </label>
-      <input
-        type="text"
-        id="number"
-        value={value}
-        readOnly
-        className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg 
-                 text-lg text-center text-white/70 placeholder-white/30
-                 cursor-not-allowed select-none
-                 transition-all duration-200
-                 focus:ring-0 focus:outline-none"
-        placeholder="•••••"
-      />
+      <div className="bg-white/10 backdrop-blur-sm rounded-xl border-2 border-white/20 p-4">
+        <span className="text-3xl font-mono tracking-wider text-white">
+          {value ? value.split('').join(' ') : '• • • • •'}
+        </span>
+      </div>
     </div>
   );
 }
