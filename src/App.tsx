@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NumberInput } from './components/NumberInput';
 import { FileDropZone } from './components/FileDropZone';
 import { PairsList } from './components/PairsList';
@@ -26,14 +26,21 @@ export default function App() {
     showMessage('File selected successfully');
   });
 
+  // evitar chamadas repetidas
+  const [isSorting, setIsSorting] = useState(false);
+
   useEffect(() => {
-    if (number) {
+    if (number && isSorting) {
       handleSort(number);
+      setIsSorting(false); // Reseta o estado para evitar novas chamadas
     }
-  }, [number, handleSort]); // Quando `number` mudar, chama `handleSort`.
+  }, [number, isSorting, handleSort]); // Agora o sort só acontece quando `isSorting` for `true`.
 
   const handleSortClick = () => {
-    generateRandomNumber(); // Gera o número aleatório, mas o envio será feito no `useEffect`.
+    if (!isSorting) { // Verifica se a ordenação já está em andamento
+      generateRandomNumber(); // Gera um número aleatório
+      setIsSorting(true); // Marca que o processo de ordenação foi iniciado
+    }
   };
 
   return (
