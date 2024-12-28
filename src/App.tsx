@@ -7,15 +7,20 @@ import { Toast } from './components/Toast';
 import { useFileHandling } from './hooks/useFileHandling';
 import { useNumberInput } from './hooks/useNumberInput';
 import { useToast } from './hooks/useToast';
+import { CodeVerification } from './components/CodeVerification';
+import { verifyCode } from './services/api/verify.service';
 
 export default function App() {
-  const { number, generateRandomNumber } = useNumberInput();
+  const { number, setNumber, generateRandomNumber } = useNumberInput(); // Agora inclui setNumber
   const { showToast, message, showMessage } = useToast();
+  const [pairs, setPairs] = useState<any[]>([]);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isSorting, setIsSorting] = useState(false);
+
   const { 
     files, 
     isDragging, 
     fileInputRef,
-    pairs,
     handleDragOver, 
     handleDragLeave, 
     handleDrop,
@@ -26,20 +31,31 @@ export default function App() {
     showMessage('File selected successfully');
   });
 
-  // evitar chamadas repetidas
-  const [isSorting, setIsSorting] = useState(false);
-
   useEffect(() => {
     if (number && isSorting) {
       handleSort(number);
-      setIsSorting(false); // Reseta o estado para evitar novas chamadas
+      setIsSorting(false);
     }
-  }, [number, isSorting, handleSort]); // Agora o sort só acontece quando `isSorting` for `true`.
+  }, [number, isSorting, handleSort]);
 
   const handleSortClick = () => {
-    if (!isSorting) { // Verifica se a ordenação já está em andamento
-      generateRandomNumber(); // Gera um número aleatório
-      setIsSorting(true); // Marca que o processo de ordenação foi iniciado
+    if (!isSorting) {
+      generateRandomNumber();
+      setIsSorting(true);
+    }
+  };
+
+  const handleVerify = async (code: string) => {
+    try {
+      setIsVerifying(true);
+      const result = await verifyCode(code);
+      setPairs(result.pairs);
+      setNumber(result.code); // Agora você pode atualizar o number
+      showMessage('Código verificado com sucesso!');
+    } catch (error) {
+      showMessage('Código inválido ou erro no servidor');
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -60,6 +76,7 @@ export default function App() {
         <div className="flex justify-center">
           <SortButton onClick={handleSortClick} disabled={files.length === 0} />
         </div>
+        <CodeVerification onVerify={handleVerify} isLoading={isVerifying} />
         <PairsList pairs={pairs} />
       </div>
       <Toast show={showToast} message={message} />
