@@ -2,11 +2,13 @@ import { useState, useCallback, useRef } from 'react';
 import { sendFileToBackend } from '../services/api/pairs.service';
 import type { Pair } from '../types';
 
-export function useFileHandling(onFileSelect?: () => void) {
+export function useFileHandling(
+  onFileSelect?: (pairs: Pair[]) => void, // Recebe a função para atualizar o estado de `pairs`
+  pairs: Pair[] = [] // Recebe o estado de `pairs` do App.tsx
+) {
   const [isDragging, setIsDragging] = useState(false);
   const [files, setFiles] = useState<string[]>([]);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [pairs, setPairs] = useState<Pair[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -31,7 +33,7 @@ export function useFileHandling(onFileSelect?: () => void) {
     if (textFile) {
       setFiles([textFile.name]);
       setSelectedFile(textFile);
-      onFileSelect?.();
+      onFileSelect?.(pairs);  // Passa `pairs` diretamente
     }
   };
 
@@ -53,7 +55,7 @@ export function useFileHandling(onFileSelect?: () => void) {
 
     try {
       const result = await sendFileToBackend(selectedFile, code);
-      setPairs(result);
+      onFileSelect?.(result);  // Passa os pares recebidos do backend
     } catch (error) {
       console.error('Error during sorting:', error);
     }
@@ -61,7 +63,6 @@ export function useFileHandling(onFileSelect?: () => void) {
 
   return {
     files,
-    pairs,
     isDragging,
     fileInputRef,
     handleDragOver,

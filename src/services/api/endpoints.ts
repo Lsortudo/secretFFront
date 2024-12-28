@@ -1,4 +1,4 @@
 export const API_ENDPOINTS = {
-  DRAW: 'http://localhost:8080/draw',
-  VERIFY: 'http://localhost:8080/verify',
+  DRAW: 'https://secretf.fly.dev/draw',
+  VERIFY: 'https://secretf.fly.dev/verify',
 } as const;

@@ -11,9 +11,9 @@ import { CodeVerification } from './components/CodeVerification';
 import { verifyCode } from './services/api/verify.service';
 
 export default function App() {
-  const { number, setNumber, generateRandomNumber } = useNumberInput(); // Agora inclui setNumber
+  const { number, setNumber, generateRandomNumber } = useNumberInput(); 
   const { showToast, message, showMessage } = useToast();
-  const [pairs, setPairs] = useState<any[]>([]);
+  const [pairs, setPairs] = useState<any[]>([]);  // Agora temos `pairs` e `setPairs`
   const [isVerifying, setIsVerifying] = useState(false);
   const [isSorting, setIsSorting] = useState(false);
 
@@ -27,9 +27,7 @@ export default function App() {
     handleClick,
     handleFileSelect,
     handleSort
-  } = useFileHandling(() => {
-    showMessage('File selected successfully');
-  });
+  } = useFileHandling((newPairs: any[]) => setPairs(newPairs), pairs);  // Passa `setPairs` e o estado `pairs`
 
   useEffect(() => {
     if (number && isSorting) {
