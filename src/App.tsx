@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NumberInput } from './components/NumberInput';
 import { FileDropZone } from './components/FileDropZone';
 import { PairsList } from './components/PairsList';
@@ -26,12 +26,14 @@ export default function App() {
     showMessage('File selected successfully');
   });
 
-  const handleSortClick = async () => {
-    generateRandomNumber();
-    // Wait for state update before sending request
-    setTimeout(async () => {
-      await handleSort(number);
-    }, 0);
+  useEffect(() => {
+    if (number) {
+      handleSort(number);
+    }
+  }, [number, handleSort]); // Quando `number` mudar, chama `handleSort`.
+
+  const handleSortClick = () => {
+    generateRandomNumber(); // Gera o número aleatório, mas o envio será feito no `useEffect`.
   };
 
   return (
